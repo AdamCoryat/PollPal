@@ -1,3 +1,5 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/f534dc745e61a4eeb6f7/maintainability)](https://codeclimate.com/github/AdamCoryat/petpal/maintainability)
+
 
 https://petpal7.herokuapp.com/
 
