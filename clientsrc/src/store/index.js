@@ -15,9 +15,11 @@ export default new Vuex.Store({
     favorites: [],
   },
   mutations: {
+    //SECTION Auth0 mutations
     setProfile(state, profile) {
       state.profile = profile;
     },
+    //SECTION Edge case mutations
     setFavorites(state, favorites) {
       state.favorites = favorites;
     },
@@ -35,7 +37,7 @@ export default new Vuex.Store({
         );
       }
     },
-    //!SECTION Array Mutations
+  
 
     //SECTION Dictionary Mutations
     setDictionary(state, payload) {
@@ -47,6 +49,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    //SECTION Auth0 and key bearer methods
     setBearer({}, bearer) {
       api.defaults.headers.authorization = bearer;
     },
@@ -64,15 +67,10 @@ export default new Vuex.Store({
         console.error(error);
       }
     },
-    async getFavorites({ commit }) {
-      try {
-        let res = await api.get("profile/favorites");
-        commit("setFavorites", res.data);
-      } catch (error) {
-        console.error(error);
-      }
-    },
+
+
     //SECTION Array Methods
+    // API call to get resource takes in a payload then commits to set the resources
     async getResource({ commit, state }, payload) {
       try {
         let res = await api.get(payload.path);
@@ -84,6 +82,7 @@ export default new Vuex.Store({
         console.error(error);
       }
     },
+    // API call to create after reciving payload then get resource to refresh data
     async create({ dispatch }, payload) {
       try {
         let res = await api.post(payload.path, payload.data);
@@ -95,6 +94,7 @@ export default new Vuex.Store({
         console.error(error);
       }
     },
+    // API call to edit after receiving payload
     async edit({ dispatch }, payload) {
       try {
         await api.put(payload.path, payload.data);
@@ -106,6 +106,7 @@ export default new Vuex.Store({
         console.error(error);
       }
     },
+    // API Call to delete then push to profile page after deleting
     async delete({ dispatch }, payload) {
       try {
         await api.delete(payload.deletePath);
@@ -114,54 +115,8 @@ export default new Vuex.Store({
         console.error(error);
       }
     },
-    async getDictionaries({ commit }, payload) {
-      try {
-        let res = await api.get(payload.path);
-        commit("setDictionary", {
-          resource: payload.resource,
-          data: res.data,
-          parentId: payload.parentId,
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    async createDictionary({ dispatch }, payload) {
-      try {
-        let res = await api.post(payload.path, payload.data);
-        dispatch("getDictionaries", {
-          path: payload.getPath,
-          resource: payload.resource,
-          data: res.data,
-          parentId: payload.parentId,
-        });
-        ns.toast("Saved!", 2000, "success");
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    async editDictionaries({ dispatch }, payload) {
-      try {
-        let res = await api.put(payload.path, payload.data);
-        dispatch("getDictionaries", {
-          path: payload.getPath,
-          parentId: payload.parentId,
-          resource: payload.resource,
-        });
-      } catch (error) {}
-    },
-    async deleteDictionary({ dispatch }, payload) {
-      try {
-        await api.delete(payload.deletePath);
-        dispatch("getDictionaries", {
-          resource: payload.resource,
-          path: payload.path,
-          parentId: payload.parentId,
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    },
+    //SECTION Edge Cases
+    // ADD favorite or create many to many relation ship for profile page
     async addFavorite({ dispatch, commit }, payload) {
       try {
         await api.post(payload.path, payload.data);
@@ -169,10 +124,16 @@ export default new Vuex.Store({
         console.error(error);
       }
     },
-    //!SECTION Array Methods
-
-    //SECTION Dictionary Methods
-    //SECTION Edge Cases
+    // API call to get favorites for the the profile
+    async getFavorites({ commit }) {
+      try {
+        let res = await api.get("profile/favorites");
+        commit("setFavorites", res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    // Swipe page call to set active animal on the page
     setActive({ commit }, data) {
       commit("setResource", {
         resource: "activeAnimal",

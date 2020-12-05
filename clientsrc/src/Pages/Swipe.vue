@@ -163,12 +163,6 @@ export default {
       if (userProfile.search.state) {
         this.$store.dispatch("getResource", {
           path: "animals?contact.address.state=" + userProfile.search.state,
-          // +
-          // "&species=" +
-          // userProfile.search.cat +
-          // "&species=" +
-          // userProfile.search.dog,
-
           resource: "animals",
         });
       } else {
