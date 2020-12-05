@@ -8,22 +8,23 @@ export class AnimalsController extends BaseController {
     super("api/animals");
     this.router
       .get("", this.getAllAnimals)
-      // NOTE: Beyond this point all routes require Authorization tokens (the user must be logged in)
+      // NOTE: Beyond this point all routes require Authorization tokens (no restrictions)
       .use(auth0Provider.getAuthorizedUserInfo)
       .get("/:id", this.getById)
       .post("", this.create)
       .put("/:id", this.editAnimal)
       .delete("/:id", this.deleteAnimal);
   }
+  // Makes a call through to the Service to get all animals (requires bearer token)
   async getAllAnimals(req, res, next) {
     try {
-      // req.query.page = req.query.page || 1;
       let data = await animalsService.findAll(req.query);
       return res.send(data);
     } catch (error) {
       next(error);
     }
   }
+  // Makes a call to to the Service to reterive an object by its id (requires bearer token)
   async getById(req, res, next) {
     try {
       let data = await animalsService.findById(req.params.id);
@@ -32,11 +33,10 @@ export class AnimalsController extends BaseController {
       next(error);
     }
   }
+  // Makes a call to the Service to edit an animal object (requires bearer token)
   async editAnimal(req, res, next) {
     try {
       req.body.creatorEmail = req.userInfo.email.toLowerCase();
-      // REVIEW put all this data into the object being edited
-      // req.body.id = req.params.id
       let data = await animalsService.edit(
         req.params.id,
         req.body.creatorEmail,
@@ -47,10 +47,9 @@ export class AnimalsController extends BaseController {
       next(error);
     }
   }
-
+// Makes a call to the Service to create a new Animal Object (requires bearer token)
   async create(req, res, next) {
     try {
-      // REVIEW do we still want this (seperate route)
       if (req.body == []) {
         let data = await animalsService.createMany(req.body);
         return res.status(201).send(data);
@@ -61,7 +60,7 @@ export class AnimalsController extends BaseController {
       next(error);
     }
   }
-
+// Makes a call to the Service to delete an Animal Object by its Id (requires bearer token)
   async deleteAnimal(req, res, next) {
     try {
       req.body.creatorEmail = req.userInfo.email.toLowerCase();

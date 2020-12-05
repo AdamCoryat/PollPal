@@ -2,25 +2,14 @@ import { dbContext } from "../db/DbContext";
 import { BadRequest } from "../utils/Errors";
 
 class AnimalsService {
+  // creates a query search to the DataBase and limits the return by 100 as well as populates the data with the creator information
   async findAll(query = {}) {
     let values = await dbContext.Animals.find(query)
       .limit(100)
       .populate("creator", "name picture");
-
-    // .limit(20)
-    // .skip(query.page * 20)
-
-    // REVIEW consider for api support of pages
-    let animals = {
-      page: query.page,
-      resultCount: values.length,
-      animals: values,
-      next:
-        values.length === 20 ? "/api/animals?page=" + (query.page + 1) : null,
-      previous: query.page > 1 ? "/api/animals?page=" + (query.page - 1) : null,
-    };
     return values;
   }
+  // searches database by the given Id and makes a null check before returning data
   async findById(id) {
     let animal = await dbContext.Animals.findById({
       _id: id,
@@ -30,10 +19,12 @@ class AnimalsService {
     }
     return animal;
   }
+  // Edge case method created to scrape the data base and create multiple animal objects at once
   async createMany(array) {
     let data = await dbContext.Animals.insertMany(array);
     return data;
   }
+  // Creates an animal object if they are the orginization makes a check and throws badrequest if they are not an org
   async create(rawData) {
     if (rawData.hasOrg) {
       let data = await dbContext.Animals.create(rawData);
@@ -41,6 +32,7 @@ class AnimalsService {
     }
     throw new BadRequest("Only Organizations may post new animals.");
   }
+  // Makes a call to the database to edit an Animal object then makes a null check before returning data
   async edit(id, creatorEmail, update) {
     let data = await dbContext.Animals.findOneAndUpdate(
       { _id: id, creatorEmail: creatorEmail },
@@ -52,6 +44,7 @@ class AnimalsService {
     }
     return data;
   }
+  // Makes a call to the database to delete an animal object by the objects id then makes an additional call to delete all relationships
   async deleteById(id, creatorEmail) {
     let data = await dbContext.Animals.findByIdAndDelete({
       _id: id,

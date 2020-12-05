@@ -1,7 +1,7 @@
 <template>
   <div class="pet-details container-fluid">
     <main class="row" v-if="activeAnimal.id">
-      <section class="col-12 d-flex justify-content-center">
+      <section class="col-12 d-flex justify-content-center" id="carousel">
         <div
           id="carouselExampleFade"
           class="shadow card-img-top carousel slide carousel-fade d-flex justifty-content-center m-2 carousel-image"
