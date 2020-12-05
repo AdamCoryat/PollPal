@@ -9,10 +9,12 @@ export class ProfilesController extends BaseController {
     super("api/profile");
     this.router
       .use(auth0Provider.getAuthorizedUserInfo)
+      //Requires Bearer Token beyond this point
       .get("", this.getUserProfile)
       .put("/:id", this.edit)
       .use("/favorites", new FavoritesController().router)
   }
+  //Makes a call to service to get a profile object by userinfo(requires Bearer Token)
   async getUserProfile(req, res, next) {
     try {
       let profile = await profilesService.getProfile(req.userInfo);
@@ -21,6 +23,7 @@ export class ProfilesController extends BaseController {
       next(error);
     }
   }
+  //Makes a call to service to edit a profile object
   async edit(req, res, next) {
     try {
       req.body.creatorId = req.user.sub;
@@ -30,7 +33,8 @@ export class ProfilesController extends BaseController {
       next(error);
     }
   }
-
+//NOTE future feature
+//Makes a call to service to add a Org to a Profile Object
   async giveOrg(req, res, next) {
     try {
       req.body.creatorId = req.user.sub;
@@ -40,7 +44,7 @@ export class ProfilesController extends BaseController {
       next(error);
     }
   }
-
+//Makes a call to service to create a Fav realationship with an Animal Object
   async addFav(req, res, next) {
     try {
       req.body.creatorId = req.user.email

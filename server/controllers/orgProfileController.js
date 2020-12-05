@@ -31,6 +31,7 @@ export class OrgProfileController extends BaseController {
     try {
       let orgProfile = await orgProService.getOrgProfile(
         req.params.id,
+        // @ts-ignore
         req.userInfo.email
       );
       res.send(orgProfile);

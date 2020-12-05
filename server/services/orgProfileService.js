@@ -24,6 +24,7 @@ class OrgProfileService {
     async edit(id, userEmail, update) {
         let org = await this.getOrgProfile(id)
         let data = null
+        // @ts-ignore
         if (org.creatorEmail == userEmail) {
             data = await dbContext.OrgProfile.findOneAndUpdate({ _id: id }, update, { new: true })
         }

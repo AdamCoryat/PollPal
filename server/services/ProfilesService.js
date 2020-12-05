@@ -92,7 +92,7 @@ class ProfileService {
     );
     return profile;
   }
-
+//Makes a call to the database to edit/update an OrgProfile attached to a profile
   async updateOrg(user, body) {
     let update = sanitizeForOrg(body);
     let profile = await dbContext.Profile.findOneAndUpdate(
