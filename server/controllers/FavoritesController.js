@@ -10,9 +10,9 @@ export class FavoritesController {
       .post("", this.addToFav)
       .delete("/:id", this.removeFav);
   }
+  // Makes a call to service to retrieve all the animals that are linked to that profile
   async getAllfavorites(req, res, next) {
     try {
-      // req.query.page = req.query.page || 1;
       let data = await favoritesService.findAll({
         creatorEmail: req.userInfo.email,
       });
@@ -21,7 +21,7 @@ export class FavoritesController {
       next(error);
     }
   }
-
+// Makes a call to service to create many to many relationship
   async addToFav(req, res, next) {
     try {
       req.body.creatorEmail = req.userInfo.email.toLowerCase();
@@ -31,7 +31,7 @@ export class FavoritesController {
       next(error);
     }
   }
-
+// Makes a call to service to delete the many to many relationship
   async removeFav(req, res, next) {
     try {
       req.body.creatorEmail = req.userInfo.email.toLowerCase();
