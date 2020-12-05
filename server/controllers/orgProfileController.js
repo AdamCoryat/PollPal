@@ -4,19 +4,20 @@ import { orgProService } from "../services/OrgProfileService";
 import auth0Provider from "@bcwdev/auth0provider";
 import { animalsService } from "../services/AnimalsService";
 
-// FIXME Review this controller for use cases
+//NOTE Future Feature!
 
 export class OrgProfileController extends BaseController {
   constructor() {
     super("api/org");
     this.router
       .use(auth0Provider.getAuthorizedUserInfo)
+      //All calls below require bearer token
       .get("", this.getAll)
       .get("/:id", this.getOrgProfile)
       .post("", this.createOrg)
       .put("/:id", this.editOrg);
   }
-
+//Makes a call to service to get all OrgProfiles (requries Bearer Token)
   async getAll(req, res, next) {
     try {
       let data = await orgProService.findAll(req.query);
@@ -25,7 +26,7 @@ export class OrgProfileController extends BaseController {
       next(error);
     }
   }
-
+//Makes a call to service to retrieve OrgProfile by its Id (requires Bearer Token)
   async getOrgProfile(req, res, next) {
     try {
       let orgProfile = await orgProService.getOrgProfile(
@@ -37,7 +38,7 @@ export class OrgProfileController extends BaseController {
       next(error);
     }
   }
-
+//Makes a call to service to create a new OrgProfile (requries Bearer Token)
   async createOrg(req, res, next) {
     try {
       req.body.creatorEmail = req.userInfo.email;
@@ -47,7 +48,7 @@ export class OrgProfileController extends BaseController {
       next(error);
     }
   }
-
+//Makes a call to service to Edit an OrgProfile Object (requires Bearer Token)
   async editOrg(req, res, next) {
     try {
       req.body.creatorEmail = req.userInfo.email.toLowerCase();
